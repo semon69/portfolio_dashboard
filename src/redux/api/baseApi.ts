@@ -6,7 +6,6 @@ import {
   fetchBaseQuery,
 } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../store";
-import { logout, setUser } from "../features/authSlice";
 
 // https://flower-management-five.vercel.app
 
@@ -22,44 +21,22 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
-const baseQueryWithRefreshToken = async (
+const baseQueryWithResult = async (
   args: string | FetchArgs,
   api: BaseQueryApi,
   // eslint-disable-next-line @typescript-eslint/ban-types
   extraOptions: {}
 ) => {
 
-  let result = await baseQuery(args, api, extraOptions);
+  const result = await baseQuery(args, api, extraOptions);
   console.log(result);
 
-  if (result?.error?.status === 401) {
-    const res = await fetch("https://flower-management-five.vercel.app/api/v1/refresh-token", {
-      method: "POST",
-      credentials: "include",
-    });
-
-    const data = await res.json();
-
-    if (data?.data?.token) {
-      const user = (api.getState() as RootState).auth.user;
-
-      api.dispatch(
-        setUser({
-          user,
-          token: data.data.token,
-        })
-      );
-      result = await baseQuery(args, api, extraOptions);
-    } else {
-      api.dispatch(logout());
-    }
-  }
   return result;
 };
 
 export const baseApi = createApi({
   reducerPath: "baseApi",
-  baseQuery: baseQueryWithRefreshToken,
+  baseQuery: baseQueryWithResult,
   tagTypes: ["skill", "user", "experience", "blog", "project"],
   endpoints: () => ({}),
 });

@@ -9,12 +9,17 @@ import ManageSkill from "../components/skill/ManageSkill";
 import ManageProject from "../components/project/ManageProject";
 import ManageBlog from "../components/Blog/ManageBlog";
 import WriteBlogs from "../components/Blog/WriteBlogs";
+import Dashboard from "../pages/Dashboard";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     children: [
+      {
+        path: "/",
+        element: <Dashboard />,
+      },
       {
         path: "/add-project",
         element: <AddProject />,

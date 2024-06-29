@@ -1,20 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { useAddSkillMutation } from "../../redux/api/skillApi";
 
 const AddSkill = () => {
-    const { handleSubmit, control } = useForm();
-  
-    const onSubmit = async (data: any) => {
-      
-  
-      try {
-        console.log(data);
-  
-      } catch (error) {
-        toast.error("Faild to create flower");
+  const [addSkill] = useAddSkillMutation()
+  const { handleSubmit, control, setValue } = useForm();
+
+  const onSubmit = async (data: any) => {
+    try {
+      // console.log(data);
+      const res = await addSkill(data);
+      if ("data" in res && res.data.success) {
+        toast.success(res.data.message);
+        // Manually reset the form by setting the values to an empty object
+        Object.keys(data).forEach((field) => {
+          setValue(field, "");
+        });
       }
-    };
+    } catch (error) {
+      toast.error("Faild to create flower");
+    }
+  };
   return (
     <div>
       <div className="container mx-auto">
@@ -44,7 +51,9 @@ const AddSkill = () => {
               </div>
               <div className="w-fulll">
                 <label className="label text-lg md:text-base sm:text-sm">
-                  <span className="label-text font-bold text-orange-500">Image</span>
+                  <span className="label-text font-bold text-orange-500">
+                    Image
+                  </span>
                 </label>
                 <Controller
                   name="image"
@@ -61,8 +70,11 @@ const AddSkill = () => {
                 />
               </div>
             </div>
-            <button type="submit" className="bg-orange-500 text-white px-4 py-2 rounded font-bold mt-5">
-                  Add
+            <button
+              type="submit"
+              className="bg-orange-500 text-white px-4 py-2 rounded font-bold mt-5"
+            >
+              Add
             </button>
           </form>
         </div>

@@ -1,13 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { useAddExperienceMutation } from "../../redux/api/experienceApi";
 
 const AddExperience = () => {
-  const { handleSubmit, control } = useForm();
+  const [addExperience] = useAddExperienceMutation()
+  const { handleSubmit, control, setValue } = useForm();
 
   const onSubmit = async (data: any) => {
     try {
-      console.log(data);
+      // console.log(data);
+      const res = await addExperience(data);
+      if ("data" in res && res.data.success) {
+        toast.success(res.data.message);
+        // Manually reset the form by setting the values to an empty object
+        Object.keys(data).forEach((field) => {
+          setValue(field, "");
+        });
+      }
     } catch (error) {
       toast.error("Faild to create flower");
     }
@@ -86,7 +96,7 @@ const AddExperience = () => {
                   </span>
                 </label>
                 <Controller
-                  name="timeSpan"
+                  name="description"
                   control={control}
                   render={({ field }) => (
                     <textarea

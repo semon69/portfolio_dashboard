@@ -1,19 +1,20 @@
 import { Outlet } from "react-router-dom";
 import { HiMenuAlt3 } from "react-icons/hi";
 import { MdOutlineDashboard } from "react-icons/md";
-import { GiCottonFlower } from "react-icons/gi";
-import { SiCreatereactapp } from "react-icons/si";
 import { RiLogoutBoxRFill } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import React, { useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../redux/hook";
+import { useAppDispatch } from "../../redux/hook";
 import { toast } from "sonner";
-import { logout, useCurrentUser } from "../../redux/features/authSlice";
+import { logout } from "../../redux/features/authSlice";
+import { FaProjectDiagram } from "react-icons/fa";
+import { GiSkills } from "react-icons/gi";
+import { ImBlog } from "react-icons/im";
+import { GrUserExpert } from "react-icons/gr";
 
 const MainLayout = () => {
   const dispatch = useAppDispatch();
-  const user = useAppSelector(useCurrentUser);
-  console.log(user);
+  // console.log(user);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -22,22 +23,22 @@ const MainLayout = () => {
 
   const menus = [
     { name: "Dashboard", link: "/", icon: MdOutlineDashboard },
-    { name: "Add Project", link: "/add-project", icon: MdOutlineDashboard },
+    { name: "Add Project", link: "/add-project", icon: FaProjectDiagram },
     {
       name: "Manage Projects",
       link: "/manage-projects",
-      icon: MdOutlineDashboard,
+      icon: FaProjectDiagram,
     },
-    { name: "Add Skill", link: "/add-skill", icon: MdOutlineDashboard },
-    { name: "Manage Skills", link: "/manage-skills", icon: GiCottonFlower },
-    { name: "Add Experience", link: "/add-experience", icon: SiCreatereactapp },
+    { name: "Add Skill", link: "/add-skill", icon: GiSkills },
+    { name: "Manage Skills", link: "/manage-skills", icon: GiSkills },
+    { name: "Add Experience", link: "/add-experience", icon: GrUserExpert },
     {
       name: "Manage Experience",
       link: "/manage-experience",
-      icon: SiCreatereactapp,
+      icon: GrUserExpert,
     },
-    { name: "Write Blog", link: "/write-blog", icon: SiCreatereactapp },
-    { name: "Manage Blog", link: "/manage-blogs", icon: SiCreatereactapp },
+    { name: "Write Blog", link: "/write-blog", icon: ImBlog },
+    { name: "Manage Blog", link: "/manage-blogs", icon: ImBlog },
   ];
   const [open, setOpen] = useState(true);
   const [activeRoute, setActiveRoute] = useState("/");
@@ -69,7 +70,7 @@ const MainLayout = () => {
                   to={menu?.link}
                   key={i}
                   className={`group flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-gray-800 rounded-md ${
-                    activeRoute === menu.link && "bg-blue-500" // Change color for active route
+                    activeRoute === menu.link && "bg-blue-800" // Change color for active route
                   }`}
                 >
                   <div>{React.createElement(menu?.icon, { size: "20" })}</div>
@@ -95,13 +96,15 @@ const MainLayout = () => {
             })}
             <button
               onClick={handleLogout}
-              className={`bg-orange-500 rounded font-bold ${open ? "p-3" : "p-2 text-lg"}`}
+              className={`bg-orange-500 rounded font-bold ${
+                open ? "p-3" : "p-2 text-lg"
+              }`}
             >
               {open ? "Logout" : <RiLogoutBoxRFill />}
             </button>
           </div>
         </div>
-        <div className="overflow-y-auto w-full lg:p-5 bg-gradient-to-br from-[#000428] to-[#01427a] text-orange-500">
+        <div className="overflow-auto w-full lg:p-5 bg-gradient-to-br from-[#000428] to-[#01427a] text-orange-500">
           <Outlet />
         </div>
       </section>

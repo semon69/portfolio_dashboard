@@ -1,0 +1,9 @@
+/* customQuill.css */
+.custom-quill .ql-editor {
+    @apply bg-blue-50 text-gray-800 text-lg p-4;
+    height: 200px; 
+}
+
+.custom-quill .ql-toolbar {
+    @apply  text-white bg-orange-400;
+}

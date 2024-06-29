@@ -1,25 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { useAddProjectMutation } from "../../redux/api/projectApi";
 
 const AddProject = () => {
+  const { handleSubmit, control, setValue } = useForm();
+  const [addProject] = useAddProjectMutation();
 
-    const { handleSubmit, control } = useForm();
-  
-    const onSubmit = async (data: any) => {
-      
-  
-      try {
-        console.log(data);
-  
-      } catch (error) {
-        toast.error("Faild to create flower");
+  const onSubmit = async (data: any) => {
+    try {
+      // console.log(data);
+      const res = await addProject(data);
+      if ("data" in res && res.data.success) {
+        toast.success(res.data.message);
+        // Manually reset the form by setting the values to an empty object
+        Object.keys(data).forEach((field) => {
+          setValue(field, "");
+        });
       }
-    };
-  
-    // if (data?.success) {
-    //   toast.success("Flower Created Successfully");
-    // }
+    } catch (error) {
+      toast.error("Faild to create flower");
+    }
+  };
 
   return (
     <div>
@@ -41,7 +43,7 @@ const AddProject = () => {
                     <input
                       {...field}
                       type="text"
-                      placeholder="Flower Name"
+                      placeholder="Project Title"
                       className="input input-bordered w-full"
                       required
                     />
@@ -50,7 +52,9 @@ const AddProject = () => {
               </div>
               <div className="w-full lg:w-1/2 md:w-full sm:w-full">
                 <label className="label text-lg md:text-base sm:text-sm">
-                  <span className="label-text font-bold text-orange-500">Image</span>
+                  <span className="label-text font-bold text-orange-500">
+                    Image
+                  </span>
                 </label>
                 <Controller
                   name="image"
@@ -70,7 +74,9 @@ const AddProject = () => {
             <div className=" lg:flex gap-4">
               <div className="w-full lg:w-1/2 md:w-full sm:w-full">
                 <label className="label text-lg md:text-base sm:text-sm">
-                  <span className="label-text font-bold text-orange-500">Github Frontend</span>
+                  <span className="label-text font-bold text-orange-500">
+                    Github Frontend
+                  </span>
                 </label>
                 <Controller
                   name="g_frontend"
@@ -88,7 +94,9 @@ const AddProject = () => {
               </div>
               <div className="w-full lg:w-1/2 md:w-full sm:w-full">
                 <label className="label text-lg md:text-base sm:text-sm">
-                  <span className="label-text font-bold text-orange-500">Github Backend</span>
+                  <span className="label-text font-bold text-orange-500">
+                    Github Backend
+                  </span>
                 </label>
                 <Controller
                   name="g_backend"
@@ -99,16 +107,18 @@ const AddProject = () => {
                       type="text"
                       placeholder="Provide Backend Github Link"
                       className="input input-bordered w-full"
-                      required
+                
                     />
                   )}
                 />
               </div>
             </div>
-            <div className=" lg:flex gap-4">
-              <div className="w-full lg:w-1/2 md:w-full sm:w-full">
+            <div className="">
+              <div className="w-full">
                 <label className="label text-lg md:text-base sm:text-sm">
-                  <span className="label-text font-bold text-orange-500">Live Link</span>
+                  <span className="label-text font-bold text-orange-500">
+                    Live Link
+                  </span>
                 </label>
                 <Controller
                   name="live_link"
@@ -124,17 +134,18 @@ const AddProject = () => {
                   )}
                 />
               </div>
-              <div className="w-full lg:w-1/2 md:w-full sm:w-full">
+              <div className="w-full">
                 <label className="label text-lg md:text-base sm:text-sm">
-                  <span className="label-text font-bold text-orange-500">Description</span>
+                  <span className="label-text font-bold text-orange-500">
+                    Description
+                  </span>
                 </label>
                 <Controller
                   name="description"
                   control={control}
                   render={({ field }) => (
-                    <input
+                    <textarea
                       {...field}
-                      type="text"
                       placeholder="Description"
                       className="input input-bordered w-full"
                       required
@@ -143,8 +154,11 @@ const AddProject = () => {
                 />
               </div>
             </div>
-            <button type="submit" className="bg-orange-500 text-white px-4 py-2 rounded font-bold mt-5">
-                  Add
+            <button
+              type="submit"
+              className="bg-orange-500 text-white px-4 py-2 rounded font-bold mt-5"
+            >
+              Add
             </button>
           </form>
         </div>
