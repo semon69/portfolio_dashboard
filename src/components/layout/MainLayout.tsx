@@ -25,7 +25,7 @@ const MainLayout = () => {
     { name: "Add Project", link: "/add-project", icon: MdOutlineDashboard },
     {
       name: "Manage Projects",
-      link: "/manage-project",
+      link: "/manage-projects",
       icon: MdOutlineDashboard,
     },
     { name: "Add Skill", link: "/add-skill", icon: MdOutlineDashboard },
@@ -101,7 +101,7 @@ const MainLayout = () => {
             </button>
           </div>
         </div>
-        <div className="overflow-y-auto w-full lg:p-10 bg-gradient-to-br from-[#000428] to-[#01427a] text-orange-500">
+        <div className="overflow-y-auto w-full lg:p-5 bg-gradient-to-br from-[#000428] to-[#01427a] text-orange-500">
           <Outlet />
         </div>
       </section>

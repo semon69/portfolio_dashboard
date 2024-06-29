@@ -23,11 +23,7 @@ const Login = () => {
       };
 
       const res = await login(userInfo).unwrap();
-      console.log("response", res);
-      
       const user = verifyToken(res.data.token) as TUser;
-
-      console.log("user", user);
 
       dispatch(setUser({ user, token: res.data.token }));
       toast.success("Login Success");
@@ -43,18 +39,15 @@ const Login = () => {
         width: "100%",
         height: "100vh",
       }}
-      className="md:flex md:justify-evenly items-center bg-slate-200"
+      className="md:flex md:justify-evenly items-center bg-gradient-to-br from-[#000428] to-[#01427a]"
     >
-      {/* <div className=" md:w-1/2 lg:text-left">
-        <Lottie animationData={loginDataLottie} />
-      </div> */}
       <div>
         <div className="border-2 rounded-lg p-5 shadow-xl m-2 bg-white">
-          <p className="text-lg font-bold text-center text-green-600">
+          <p className="text-xl font-bold text-center text-orange-500">
             Login Now
           </p>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div style={{ marginBottom: "1rem" }}>
+            <div style={{ marginBottom: "1.5rem" }}>
               <label className="font-bold" htmlFor="">
                 Email:
               </label>
@@ -66,7 +59,7 @@ const Login = () => {
                 {...register("email")}
               />
             </div>
-            <div style={{ marginBottom: "1rem" }}>
+            <div style={{ marginBottom: "1.5rem" }}>
               <label className="font-bold" htmlFor="">
                 Password:
               </label>
@@ -79,7 +72,7 @@ const Login = () => {
               />
             </div>
             <button
-              className="cursor-pointer rounded bg-blue-600 py-2 px-4 text-white"
+              className="cursor-pointer rounded bg-orange-500 py-2 px-4 text-white font-bold"
               type="submit"
             >
               Submit
