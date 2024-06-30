@@ -31,7 +31,7 @@ const WriteBlogs = () => {
   return (
     <div className="container mx-auto">
       <p className="font-bold text-center text-orange-500 text-3xl">
-        Write Blogs
+        Update Blog
       </p>
       <div className="border-4 p-4 shadow-xl m-2 lg:m-10 md:m-5">
         <label className="label text-lg md:text-base sm:text-sm font-bold">

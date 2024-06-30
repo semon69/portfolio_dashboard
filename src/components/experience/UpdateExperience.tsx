@@ -35,7 +35,7 @@ const UpdateExperience = () => {
     <div>
       <div className="container mx-auto">
         <p className="font-bold text-center text-orange-500 text-3xl">
-          Add new Experience
+          Update Experience
         </p>
         <div className="border-4 p-2 shadow-xl m-2 lg:m-10 md:m-5">
           <form onSubmit={handleSubmit(updateData)}>
