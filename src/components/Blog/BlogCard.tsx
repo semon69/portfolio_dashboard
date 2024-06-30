@@ -16,7 +16,7 @@ const BlogCard = ({ item }: { item: any }) => {
       <th>{item?.title}</th>
       <th className="">
         <button className="bg-blue-600 text-white btn-xs mr-3 rounded-md">
-          <Link to={"/"} state={item}>
+          <Link to={`/update-blog/${item?._id}`}>
             Update
           </Link>
         </button>

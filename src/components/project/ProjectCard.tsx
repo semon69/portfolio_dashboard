@@ -16,9 +16,7 @@ const ProjectCard = ({ item }: { item: any }) => {
       <th>{item?.title}</th>
       <th className="">
         <button className="bg-blue-600 text-white btn-xs mr-3 rounded-md">
-          <Link to={"/"} state={item}>
-            Update
-          </Link>
+          <Link to={`/update-project/${item?._id}`}>Update</Link>
         </button>
         <button
           onClick={() => handleDelete(item._id)}

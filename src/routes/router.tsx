@@ -10,6 +10,10 @@ import ManageProject from "../components/project/ManageProject";
 import ManageBlog from "../components/Blog/ManageBlog";
 import WriteBlogs from "../components/Blog/WriteBlogs";
 import Dashboard from "../pages/Dashboard";
+import UpdateSkill from "../components/skill/UpdateSkill";
+import UpdateExperience from "../components/experience/UpdateExperience";
+import UpdateProject from "../components/project/UpdateProject";
+import UpdateBlog from "../components/Blog/UpdateBlog";
 
 export const router = createBrowserRouter([
   {
@@ -29,12 +33,28 @@ export const router = createBrowserRouter([
         element: <ManageProject />,
       },
       {
+        path: "/update-project/:id",
+        element: <UpdateProject />,
+        loader: ({ params }) =>
+          fetch(
+            `https://portfolio-server-cyan.vercel.app/api/v1/project/${params.id}`
+          ),
+      },
+      {
         path: "/add-skill",
         element: <AddSkill />,
       },
       {
         path: "/manage-skills",
         element: <ManageSkill />,
+      },
+      {
+        path: "/update-skill/:id",
+        element: <UpdateSkill />,
+        loader: ({ params }) =>
+          fetch(
+            `https://portfolio-server-cyan.vercel.app/api/v1/skill/${params.id}`
+          ),
       },
       {
         path: "/add-experience",
@@ -45,12 +65,28 @@ export const router = createBrowserRouter([
         element: <ManageExperience />,
       },
       {
+        path: "/update-experience/:id",
+        element: <UpdateExperience />,
+        loader: ({ params }) =>
+          fetch(
+            `https://portfolio-server-cyan.vercel.app/api/v1/experience/${params.id}`
+          ),
+      },
+      {
         path: "/write-blog",
         element: <WriteBlogs />,
       },
       {
         path: "/manage-blogs",
         element: <ManageBlog />,
+      },
+      {
+        path: "/update-blog/:id",
+        element: <UpdateBlog />,
+        loader: ({ params }) =>
+          fetch(
+            `https://portfolio-server-cyan.vercel.app/api/v1/blog/${params.id}`
+          ),
       },
     ],
   },

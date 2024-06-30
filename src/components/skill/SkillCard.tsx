@@ -25,7 +25,7 @@ const SkillCard = ({ item }: { item: any }) => {
       <th>{item?.name}</th>
       <th className="">
         <button className="bg-blue-600 text-white btn-xs mr-3 rounded-md">
-          <Link to={"/"} state={item}>
+          <Link to={`/update-skill/${item?._id}`} state={item}>
             Update
           </Link>
         </button>
