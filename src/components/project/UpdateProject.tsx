@@ -119,13 +119,12 @@ const UpdateProject = () => {
                       type="text"
                       placeholder="Provide Backend Github Link"
                       className="input input-bordered w-full"
-                
                     />
                   )}
                 />
               </div>
             </div>
-            <div className="">
+            <div className=" lg:flex gap-4">
               <div className="w-full">
                 <label className="label text-lg md:text-base sm:text-sm">
                   <span className="label-text font-bold text-orange-500">
@@ -147,6 +146,29 @@ const UpdateProject = () => {
                   )}
                 />
               </div>
+              <div className="w-full">
+                <label className="label text-lg md:text-base sm:text-sm">
+                  <span className="label-text font-bold text-orange-500">
+                    Technology Used
+                  </span>
+                </label>
+                <Controller
+                  name="tech"
+                  defaultValue={project?.data?.tech}
+                  control={control}
+                  render={({ field }) => (
+                    <input
+                      {...field}
+                      type="text"
+                      placeholder="Technology used in this project"
+                      className="input input-bordered w-full"
+                      required
+                    />
+                  )}
+                />
+              </div>
+            </div>
+            <div className="">
               <div className="w-full">
                 <label className="label text-lg md:text-base sm:text-sm">
                   <span className="label-text font-bold text-orange-500">
