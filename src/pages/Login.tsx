@@ -2,7 +2,7 @@
 import { useForm } from "react-hook-form";
 import { useAppDispatch } from "../redux/hook";
 import { useLoginMutation } from "../redux/api/authApi";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { TUser, setUser } from "../redux/features/authSlice";
 import { verifyToken } from "../utils/verfyToken";
 import { toast } from "sonner";
@@ -77,6 +77,12 @@ const Login = () => {
             >
               Submit
             </button>
+            <Link
+              className="block mt-4 text-sm font-bold text-orange-500 hover:underline"
+              to="/forgot-password"
+            >
+              Forgot password?
+            </Link>
           </form>
         </div>
       </div>
