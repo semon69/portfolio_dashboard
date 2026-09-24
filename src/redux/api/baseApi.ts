@@ -9,7 +9,7 @@ import { RootState } from "../store";
 // https://flower-management-five.vercel.app
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "https://portfolio-server-cyan.vercel.app/api/v1",
+  baseUrl: "https://portfolio-backend-eta-plum.vercel.app/api/v1",
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).auth.token;

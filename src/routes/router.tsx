@@ -39,7 +39,7 @@ export const router = createBrowserRouter([
         element: <UpdateProject />,
         loader: ({ params }) =>
           fetch(
-            `https://portfolio-server-cyan.vercel.app/api/v1/project/${params.id}`
+            `https://portfolio-backend-eta-plum.vercel.app/api/v1/project/${params.id}`
           ),
       },
       {
@@ -55,7 +55,7 @@ export const router = createBrowserRouter([
         element: <UpdateSkill />,
         loader: ({ params }) =>
           fetch(
-            `https://portfolio-server-cyan.vercel.app/api/v1/skill/${params.id}`
+            `https://portfolio-backend-eta-plum.vercel.app/api/v1/skill/${params.id}`
           ),
       },
       {
@@ -71,7 +71,7 @@ export const router = createBrowserRouter([
         element: <UpdateExperience />,
         loader: ({ params }) =>
           fetch(
-            `https://portfolio-server-cyan.vercel.app/api/v1/experience/${params.id}`
+            `https://portfolio-backend-eta-plum.vercel.app/api/v1/experience/${params.id}`
           ),
       },
       {
@@ -87,7 +87,7 @@ export const router = createBrowserRouter([
         element: <UpdateBlog />,
         loader: ({ params }) =>
           fetch(
-            `https://portfolio-server-cyan.vercel.app/api/v1/blog/${params.id}`
+            `https://portfolio-backend-eta-plum.vercel.app/api/v1/blog/${params.id}`
           ),
       },
     ],
