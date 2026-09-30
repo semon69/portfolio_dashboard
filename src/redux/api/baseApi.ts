@@ -5,11 +5,10 @@ import {
   fetchBaseQuery,
 } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../store";
-
-// https://flower-management-five.vercel.app
+import { API_BASE } from "../../config/api";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "https://portfolio-backend-eta-plum.vercel.app/api/v1",
+  baseUrl: API_BASE,
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).auth.token;
@@ -25,13 +24,7 @@ const baseQueryWithResult = async (
   api: BaseQueryApi,
   // eslint-disable-next-line @typescript-eslint/ban-types
   extraOptions: {}
-) => {
-
-  const result = await baseQuery(args, api, extraOptions);
-  console.log(result);
-
-  return result;
-};
+) => baseQuery(args, api, extraOptions);
 
 export const baseApi = createApi({
   reducerPath: "baseApi",

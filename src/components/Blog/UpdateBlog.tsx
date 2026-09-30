@@ -1,92 +1,58 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import "./Blog.css";
-import { useUpdateBlogMutation } from "../../redux/api/blogApi";
-import { toast } from "sonner";
 import { useLoaderData, useNavigate } from "react-router-dom";
+import { useUpdateBlogMutation } from "../../redux/api/blogApi";
+import { runMutation } from "../../utils/runMutation";
+import BlogEditor from "./BlogEditor";
+import { BlogFormValues, emptyBlog } from "./blogFormValues";
 
 const UpdateBlog = () => {
-  const [title, setTitle] = useState("");
-  const [image, setImage] = useState("");
-  const [description, setDescription] = useState("");
-  const [updateBlog] = useUpdateBlogMutation();
+  const loaded: any = useLoaderData();
   const navigate = useNavigate();
-  const blog: any = useLoaderData();
+  const [updateBlog, { isLoading }] = useUpdateBlogMutation();
+  const [values, setValues] = useState<BlogFormValues>(emptyBlog);
 
   useEffect(() => {
-    if (blog?.data) {
-      setTitle(blog.data.title);
-      setImage(blog.data.image);
-      setDescription(blog.data.description);
-    }
-  }, [blog]);
+    const post = loaded?.data;
+    if (!post) return;
+
+    setValues({
+      title: post.title ?? "",
+      image: post.image ?? "",
+      excerpt: post.excerpt ?? "",
+      description: post.description ?? "",
+      tags: Array.isArray(post.tags) ? post.tags : [],
+      // Posts written before `published` existed have no value; treat
+      // them as live rather than silently hiding them.
+      published: post.published !== false,
+    });
+  }, [loaded]);
 
   const handleSubmit = async () => {
-    const data = { title, image, description };
-    const payload = {
-      id: blog?.data?._id,
-      data,
-    };
+    const ok = await runMutation(
+      updateBlog({
+        id: loaded?.data?._id,
+        data: {
+          ...values,
+          title: values.title.trim(),
+          image: values.image.trim(),
+          excerpt: values.excerpt.trim(),
+        },
+      }),
+      { success: "Post updated" }
+    );
 
-    try {
-      const res = await updateBlog(payload);
-
-      if ("data" in res && res.data.success) {
-        toast.success(res.data.message);
-        setTitle("");
-        setImage("");
-        setDescription("");
-        navigate("/manage-blogs");
-      }
-    } catch (error) {
-      toast.error("Failed to update blog");
-    }
+    if (ok) navigate("/manage-blogs");
   };
+
   return (
-    <div className="container mx-auto">
-      <p className="font-bold text-center text-orange-500 text-3xl">
-        Write Blogs
-      </p>
-      <div className="border-4 p-4 shadow-xl m-2 lg:m-10 md:m-5">
-        <label className="label text-lg md:text-base sm:text-sm font-bold">
-          <span className="label-text text-orange-500">Title</span>
-        </label>
-        <input
-          type="text"
-          placeholder="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="input input-bordered w-full"
-          //   defaultValue={blog?.data?.title}
-        />
-        <label className="label text-lg md:text-base sm:text-sm font-bold">
-          <span className="label-text text-orange-500">Image</span>
-        </label>
-        <input
-          type="text"
-          placeholder="Image URL"
-          value={image}
-          onChange={(e) => setImage(e.target.value)}
-          className="input input-bordered w-full mb-2"
-          //   defaultValue={blog?.data?.image}
-        />
-        <div className="custom-quill">
-          <ReactQuill
-            value={description}
-            onChange={setDescription}
-            // defaultValue={blog?.data?.description}
-          />
-        </div>
-        <button
-          onClick={handleSubmit}
-          className="bg-orange-500 text-white px-4 py-2 rounded font-bold mt-5"
-        >
-          Update
-        </button>
-      </div>
-    </div>
+    <BlogEditor
+      mode="edit"
+      value={values}
+      onChange={setValues}
+      onSubmit={handleSubmit}
+      saving={isLoading}
+    />
   );
 };
 
