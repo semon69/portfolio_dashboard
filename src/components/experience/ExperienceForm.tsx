@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { FiSave } from "react-icons/fi";
 import Button from "../ui/Button";
 import Field, { inputClass } from "../ui/Field";
@@ -10,7 +10,7 @@ import type { ExperienceValues } from "./experienceFormValues";
 type Props = {
   mode: "create" | "edit";
   value: ExperienceValues;
-  onChange: (next: ExperienceValues) => void;
+  onChange: Dispatch<SetStateAction<ExperienceValues>>;
   onSubmit: () => void;
   saving: boolean;
 };
@@ -19,7 +19,7 @@ const ExperienceForm = ({ mode, value, onChange, onSubmit, saving }: Props) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const set = (key: keyof ExperienceValues, next: string) =>
-    onChange({ ...value, [key]: next });
+    onChange((prev) => ({ ...prev, [key]: next }));
 
   // Ordering on the site is derived from this text, so warn early if it
   // can't be parsed rather than letting the role sort to the bottom.

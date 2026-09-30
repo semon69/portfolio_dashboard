@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { FiSave } from "react-icons/fi";
 import Button from "../ui/Button";
 import Field, { inputClass } from "../ui/Field";
@@ -11,7 +11,7 @@ import ImageUploader from "../ui/ImageUploader";
 type Props = {
   mode: "create" | "edit";
   value: ProjectValues;
-  onChange: (next: ProjectValues) => void;
+  onChange: Dispatch<SetStateAction<ProjectValues>>;
   onSubmit: () => void;
   saving: boolean;
 };
@@ -20,7 +20,7 @@ const ProjectForm = ({ mode, value, onChange, onSubmit, saving }: Props) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const set = (key: keyof ProjectValues, next: string) =>
-    onChange({ ...value, [key]: next });
+    onChange((prev) => ({ ...prev, [key]: next }));
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();

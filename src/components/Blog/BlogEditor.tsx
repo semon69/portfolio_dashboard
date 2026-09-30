@@ -1,4 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import {
@@ -55,7 +61,13 @@ const isViewerPage = (url: string) => {
 type Props = {
   mode: "create" | "edit";
   value: BlogFormValues;
-  onChange: (next: BlogFormValues) => void;
+  /**
+   * A state setter, not a plain callback. Quill fires onChange
+   * asynchronously after mount, so a handler that spreads the `value`
+   * prop would be working from a stale closure and wipe every field it
+   * didn't set. Functional updates always read the latest state.
+   */
+  onChange: Dispatch<SetStateAction<BlogFormValues>>;
   onSubmit: () => void;
   saving: boolean;
 };
@@ -76,7 +88,7 @@ const BlogEditor = ({ mode, value, onChange, onSubmit, saving }: Props) => {
   const set = <K extends keyof BlogFormValues>(
     key: K,
     next: BlogFormValues[K]
-  ) => onChange({ ...value, [key]: next });
+  ) => onChange((prev) => ({ ...prev, [key]: next }));
 
   const plain = useMemo(() => stripHtml(value.description), [value.description]);
   const words = plain ? plain.split(" ").length : 0;
@@ -84,14 +96,21 @@ const BlogEditor = ({ mode, value, onChange, onSubmit, saving }: Props) => {
 
   const addTag = () => {
     const tag = tagDraft.trim().replace(/,$/, "");
-    if (!tag) return;
-    if (value.tags.some((t) => t.toLowerCase() === tag.toLowerCase())) {
-      setTagDraft("");
-      return;
-    }
-    set("tags", [...value.tags, tag]);
     setTagDraft("");
+    if (!tag) return;
+
+    onChange((prev) =>
+      prev.tags.some((t) => t.toLowerCase() === tag.toLowerCase())
+        ? prev
+        : { ...prev, tags: [...prev.tags, tag] }
+    );
   };
+
+  const removeTag = (tag: string) =>
+    onChange((prev) => ({
+      ...prev,
+      tags: prev.tags.filter((t) => t !== tag),
+    }));
 
   const validate = () => {
     const next: Record<string, string> = {};
@@ -404,12 +423,7 @@ const BlogEditor = ({ mode, value, onChange, onSubmit, saving }: Props) => {
                       {tag}
                       <button
                         type="button"
-                        onClick={() =>
-                          set(
-                            "tags",
-                            value.tags.filter((t) => t !== tag)
-                          )
-                        }
+                        onClick={() => removeTag(tag)}
                         aria-label={`Remove tag ${tag}`}
                         className="text-faint transition-colors hover:text-danger"
                       >

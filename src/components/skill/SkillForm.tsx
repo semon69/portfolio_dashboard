@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { FiSave } from "react-icons/fi";
 import Button from "../ui/Button";
 import Field, { inputClass } from "../ui/Field";
@@ -9,7 +9,7 @@ import type { SkillValues } from "./skillFormValues";
 type Props = {
   mode: "create" | "edit";
   value: SkillValues;
-  onChange: (next: SkillValues) => void;
+  onChange: Dispatch<SetStateAction<SkillValues>>;
   onSubmit: () => void;
   saving: boolean;
 };
@@ -50,7 +50,7 @@ const SkillForm = ({ mode, value, onChange, onSubmit, saving }: Props) => {
             className={inputClass}
             placeholder="TypeScript"
             value={value.name}
-            onChange={(e) => onChange({ ...value, name: e.target.value })}
+            onChange={(e) => onChange((prev) => ({ ...prev, name: e.target.value }))}
           />
         </Field>
 
@@ -65,7 +65,7 @@ const SkillForm = ({ mode, value, onChange, onSubmit, saving }: Props) => {
             id="category"
             className={inputClass}
             value={value.category}
-            onChange={(e) => onChange({ ...value, category: e.target.value })}
+            onChange={(e) => onChange((prev) => ({ ...prev, category: e.target.value }))}
           >
             {SKILL_CATEGORIES.map((category) => (
               <option key={category} value={category}>
