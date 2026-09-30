@@ -1,3 +1,11 @@
-export type SkillValues = { name: string; image: string };
+import { DEFAULT_CATEGORY } from "../../config/skillCategories";
 
-export const emptySkill: SkillValues = { name: "", image: "" };
+export type SkillValues = {
+  name: string;
+  category: string;
+};
+
+export const emptySkill: SkillValues = {
+  name: "",
+  category: DEFAULT_CATEGORY,
+};

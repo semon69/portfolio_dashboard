@@ -7,8 +7,7 @@ import Button from "../ui/Button";
 import useTheme from "../../hooks/useTheme";
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import { logout, useCurrentUser } from "../../redux/features/authSlice";
-
-const SITE_URL = "https://emon69.netlify.app";
+import { SITE_URL } from "../../config/site";
 
 const MainLayout = () => {
   const dispatch = useAppDispatch();

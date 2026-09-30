@@ -3,8 +3,8 @@ import { FiSave } from "react-icons/fi";
 import Button from "../ui/Button";
 import Field, { inputClass } from "../ui/Field";
 import { Card, PageHeader } from "../ui/Card";
+import { SKILL_CATEGORIES } from "../../config/skillCategories";
 import type { SkillValues } from "./skillFormValues";
-
 
 type Props = {
   mode: "create" | "edit";
@@ -22,7 +22,7 @@ const SkillForm = ({ mode, value, onChange, onSubmit, saving }: Props) => {
 
     const next: Record<string, string> = {};
     if (!value.name.trim()) next.name = "A name is required";
-    if (!value.image.trim()) next.image = "An icon URL is required";
+    if (!value.category.trim()) next.category = "Pick a group";
     setErrors(next);
 
     if (Object.keys(next).length === 0) onSubmit();
@@ -32,7 +32,7 @@ const SkillForm = ({ mode, value, onChange, onSubmit, saving }: Props) => {
     <form onSubmit={handleSubmit}>
       <PageHeader
         title={mode === "create" ? "Add a skill" : "Edit skill"}
-        description="Skills appear as a grid of icons on your public site."
+        description="Skills show as text chips, grouped by category, on your public site."
         actions={
           <Button type="submit" loading={saving}>
             <FiSave aria-hidden="true" />
@@ -53,37 +53,37 @@ const SkillForm = ({ mode, value, onChange, onSubmit, saving }: Props) => {
         </Field>
 
         <Field
-          label="Icon URL"
-          htmlFor="image"
+          label="Group"
+          htmlFor="category"
           required
-          hint="A square, transparent PNG or SVG works best."
-          error={errors.image}
+          hint="Decides which block it appears under."
+          error={errors.category}
         >
-          <input
-            id="image"
-            type="url"
+          <select
+            id="category"
             className={inputClass}
-            placeholder="https://i.ibb.co/…"
-            value={value.image}
-            onChange={(e) => onChange({ ...value, image: e.target.value })}
-          />
+            value={value.category}
+            onChange={(e) => onChange({ ...value, category: e.target.value })}
+          >
+            {SKILL_CATEGORIES.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
         </Field>
 
-        {value.image && (
-          <div>
-            <p className="mb-2 text-sm font-medium text-ink">Preview</p>
-            <div className="flex w-fit flex-col items-center gap-3 rounded-xl border border-line bg-surface px-6 py-5">
-              <img
-                src={value.image}
-                alt=""
-                className="h-12 w-12 object-contain"
-              />
-              <span className="text-sm text-muted">
-                {value.name || "Skill name"}
-              </span>
-            </div>
+        <div>
+          <p className="mb-2 text-sm font-medium text-ink">Preview</p>
+          <div className="rounded-xl border border-line bg-surface p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-accent">
+              {value.category}
+            </p>
+            <span className="mt-4 inline-block rounded-md border border-line bg-raised px-2.5 py-1 text-xs text-muted">
+              {value.name || "Skill name"}
+            </span>
           </div>
-        )}
+        </div>
       </Card>
     </form>
   );

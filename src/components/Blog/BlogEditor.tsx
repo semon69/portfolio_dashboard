@@ -1,7 +1,9 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import {
+  FiAlertCircle,
+  FiCheck,
   FiCode,
   FiEdit3,
   FiEye,
@@ -14,6 +16,7 @@ import Button from "../ui/Button";
 import Field, { inputClass } from "../ui/Field";
 import { Card, PageHeader } from "../ui/Card";
 import type { BlogFormValues } from "./blogFormValues";
+import { isRelativeAsset, resolveAssetUrl } from "../../config/site";
 
 
 // Only the formats the public site's .rich-text styles actually render.
@@ -34,6 +37,20 @@ const stripHtml = (html: string) =>
     .replace(/\s+/g, " ")
     .trim();
 
+/**
+ * Detects the usual mistake: pasting the host's viewer page rather than
+ * the image file. imgbb serves pages from ibb.co and files from i.ibb.co,
+ * so the bare host is the giveaway.
+ */
+const isViewerPage = (url: string) => {
+  try {
+    const { hostname } = new URL(url.trim());
+    return /^(www\.)?(ibb\.co|imgur\.com|postimg\.cc|prnt\.sc)$/i.test(hostname);
+  } catch {
+    return false;
+  }
+};
+
 type Props = {
   mode: "create" | "edit";
   value: BlogFormValues;
@@ -48,6 +65,12 @@ const BlogEditor = ({ mode, value, onChange, onSubmit, saving }: Props) => {
   // written elsewhere gets pasted in without Quill reformatting it.
   const [view, setView] = useState<"write" | "html" | "preview">("write");
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [imageStatus, setImageStatus] = useState<"idle" | "ok" | "error">(
+    "idle"
+  );
+
+  // A new URL hasn't been judged yet; clear the previous verdict.
+  useEffect(() => setImageStatus("idle"), [value.image]);
 
   const set = <K extends keyof BlogFormValues>(
     key: K,
@@ -258,11 +281,19 @@ const BlogEditor = ({ mode, value, onChange, onSubmit, saving }: Props) => {
               <FiImage aria-hidden="true" />
               Cover image
             </h2>
-            <Field label="Image URL" htmlFor="image" required error={errors.image}>
+            <Field
+              label="Image"
+              htmlFor="image"
+              required
+              hint="A path like /images/blog/cover.png, or a full URL for an image hosted elsewhere."
+              error={errors.image}
+            >
+              {/* Deliberately type="text": type="url" rejects the
+                  site-relative paths this field is meant to accept. */}
               <input
                 id="image"
-                type="url"
-                placeholder="https://i.ibb.co/…"
+                type="text"
+                placeholder="/images/blog/cover.png"
                 className={inputClass}
                 value={value.image}
                 onChange={(e) => set("image", e.target.value)}
@@ -270,18 +301,60 @@ const BlogEditor = ({ mode, value, onChange, onSubmit, saving }: Props) => {
             </Field>
 
             {value.image && (
-              <div className="mt-3 overflow-hidden rounded-lg border border-line bg-raised">
-                <img
-                  src={value.image}
-                  alt="Cover preview"
-                  className="aspect-[16/10] w-full object-cover"
-                  onError={(e) => {
-                    (e.currentTarget.style.display = "none");
-                  }}
-                  onLoad={(e) => {
-                    (e.currentTarget.style.display = "block");
-                  }}
-                />
+              <div className="mt-3">
+                <div
+                  className={`overflow-hidden rounded-lg border bg-raised ${
+                    imageStatus === "error" ? "border-danger/40" : "border-line"
+                  }`}
+                >
+                  <img
+                    // Keyed on the URL so switching links restarts the load
+                    // rather than keeping the previous result.
+                    key={resolveAssetUrl(value.image)}
+                    src={resolveAssetUrl(value.image)}
+                    alt="Cover preview"
+                    className={`aspect-[16/10] w-full object-cover ${
+                      imageStatus === "error" ? "hidden" : ""
+                    }`}
+                    onLoad={() => setImageStatus("ok")}
+                    onError={() => setImageStatus("error")}
+                  />
+
+                  {imageStatus === "error" && (
+                    <div className="grid aspect-[16/10] place-items-center px-4 text-center">
+                      <FiAlertCircle
+                        className="text-xl text-danger"
+                        aria-hidden="true"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {imageStatus === "ok" && (
+                  <p className="mt-2 flex items-start gap-1.5 text-xs text-success">
+                    <FiCheck className="mt-0.5 shrink-0" aria-hidden="true" />
+                    <span>
+                      Image loads correctly.
+                      {isRelativeAsset(value.image) && (
+                        <span className="text-muted">
+                          {" "}
+                          Stored as a relative path, so it follows the site to
+                          any domain.
+                        </span>
+                      )}
+                    </span>
+                  </p>
+                )}
+
+                {imageStatus === "error" && (
+                  <p role="alert" className="mt-2 text-xs text-danger">
+                    {isViewerPage(value.image)
+                      ? "That's the page the image sits on, not the image itself. On imgbb, open the upload and copy the “Direct link” — it starts with i. and ends in .jpg or .png."
+                      : isRelativeAsset(value.image)
+                        ? `Nothing found at ${resolveAssetUrl(value.image)}. Check the file exists in the site's public folder and has been deployed.`
+                        : "This URL didn't load an image. Open it in a new tab: you should see only the picture, with no page around it."}
+                  </p>
+                )}
               </div>
             )}
           </Card>

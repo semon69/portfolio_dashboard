@@ -4,6 +4,7 @@ import Button from "../ui/Button";
 import Field, { inputClass } from "../ui/Field";
 import { Card, PageHeader } from "../ui/Card";
 import type { ProjectValues } from "./projectFormValues";
+import { resolveAssetUrl } from "../../config/site";
 
 
 type Props = {
@@ -117,9 +118,9 @@ const ProjectForm = ({ mode, value, onChange, onSubmit, saving }: Props) => {
             <Field label="Image URL" htmlFor="image" required error={errors.image}>
               <input
                 id="image"
-                type="url"
+                type="text"
                 className={inputClass}
-                placeholder="https://i.ibb.co/…"
+                placeholder="/images/projects/cover.png"
                 value={value.image}
                 onChange={(e) => set("image", e.target.value)}
               />
@@ -127,7 +128,7 @@ const ProjectForm = ({ mode, value, onChange, onSubmit, saving }: Props) => {
             {value.image && (
               <div className="mt-3 overflow-hidden rounded-lg border border-line bg-raised">
                 <img
-                  src={value.image}
+                  src={resolveAssetUrl(value.image)}
                   alt="Cover preview"
                   className="aspect-[16/10] w-full object-cover"
                 />

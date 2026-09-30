@@ -5,6 +5,7 @@ import { useUpdateSkillMutation } from "../../redux/api/skillApi";
 import { runMutation } from "../../utils/runMutation";
 import SkillForm from "./SkillForm";
 import { SkillValues, emptySkill } from "./skillFormValues";
+import { DEFAULT_CATEGORY } from "../../config/skillCategories";
 
 const UpdateSkill = () => {
   const loaded: any = useLoaderData();
@@ -15,7 +16,12 @@ const UpdateSkill = () => {
   useEffect(() => {
     const skill = loaded?.data;
     if (!skill) return;
-    setValues({ name: skill.name ?? "", image: skill.image ?? "" });
+
+    setValues({
+      name: skill.name ?? "",
+      // Records created before categories existed fall back to "Other".
+      category: skill.category?.trim() || DEFAULT_CATEGORY,
+    });
   }, [loaded]);
 
   const handleSubmit = async () => {
