@@ -85,9 +85,8 @@ const AddProject = () => {
                     <input
                       {...field}
                       type="text"
-                      placeholder="Provide Frontend Github Link"
+                      placeholder="Frontend Github link (optional)"
                       className="input input-bordered w-full"
-                      required
                     />
                   )}
                 />
@@ -105,7 +104,7 @@ const AddProject = () => {
                     <input
                       {...field}
                       type="text"
-                      placeholder="Provide Backend Github Link"
+                      placeholder="Backend Github link (optional)"
                       className="input input-bordered w-full"
                     />
                   )}
@@ -126,9 +125,8 @@ const AddProject = () => {
                     <input
                       {...field}
                       type="text"
-                      placeholder="Provide Live Link"
+                      placeholder="Live link (optional)"
                       className="input input-bordered w-full"
-                      required
                     />
                   )}
                 />
