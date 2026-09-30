@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import {
+  FiCode,
   FiEdit3,
   FiEye,
   FiImage,
@@ -43,7 +44,9 @@ type Props = {
 
 const BlogEditor = ({ mode, value, onChange, onSubmit, saving }: Props) => {
   const [tagDraft, setTagDraft] = useState("");
-  const [preview, setPreview] = useState(false);
+  // "html" exposes the stored markup directly, which is how a draft
+  // written elsewhere gets pasted in without Quill reformatting it.
+  const [view, setView] = useState<"write" | "html" | "preview">("write");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const set = <K extends keyof BlogFormValues>(
@@ -90,14 +93,35 @@ const BlogEditor = ({ mode, value, onChange, onSubmit, saving }: Props) => {
         }
         actions={
           <>
-            <Button
-              variant="outline"
-              onClick={() => setPreview((p) => !p)}
-              type="button"
+            <div
+              role="tablist"
+              aria-label="Editor view"
+              className="flex rounded-lg border border-line p-1"
             >
-              {preview ? <FiEdit3 aria-hidden="true" /> : <FiEye aria-hidden="true" />}
-              {preview ? "Edit" : "Preview"}
-            </Button>
+              {(
+                [
+                  { key: "write", label: "Write", icon: FiEdit3 },
+                  { key: "html", label: "HTML", icon: FiCode },
+                  { key: "preview", label: "Preview", icon: FiEye },
+                ] as const
+              ).map((tab) => (
+                <button
+                  key={tab.key}
+                  type="button"
+                  role="tab"
+                  aria-selected={view === tab.key}
+                  onClick={() => setView(tab.key)}
+                  className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
+                    view === tab.key
+                      ? "bg-accent-solid/15 text-accent"
+                      : "text-muted hover:text-ink"
+                  }`}
+                >
+                  <tab.icon aria-hidden="true" />
+                  {tab.label}
+                </button>
+              ))}
+            </div>
             <Button onClick={handleSubmit} loading={saving} type="button">
               <FiSave aria-hidden="true" />
               {mode === "create" ? "Publish" : "Save changes"}
@@ -153,7 +177,7 @@ const BlogEditor = ({ mode, value, onChange, onSubmit, saving }: Props) => {
               </span>
             </div>
 
-            {preview ? (
+            {view === "preview" && (
               <div className="min-h-[22rem] rounded-lg border border-line bg-bg p-5">
                 {plain ? (
                   <article
@@ -165,7 +189,27 @@ const BlogEditor = ({ mode, value, onChange, onSubmit, saving }: Props) => {
                   <p className="text-sm text-faint">Nothing to preview yet.</p>
                 )}
               </div>
-            ) : (
+            )}
+
+            {view === "html" && (
+              <>
+                <textarea
+                  aria-label="Post body as HTML"
+                  spellCheck={false}
+                  className={`${inputClass} min-h-[22rem] resize-y font-mono text-xs leading-relaxed`}
+                  placeholder="<p>Paste or edit the post markup here…</p>"
+                  value={value.description}
+                  onChange={(e) => set("description", e.target.value)}
+                />
+                <p className="mt-2 text-xs text-faint">
+                  Saved exactly as written. Switching back to Write hands it
+                  to the editor, which may tidy up tags it doesn&rsquo;t
+                  support.
+                </p>
+              </>
+            )}
+
+            {view === "write" && (
               <div className="editor">
                 <ReactQuill
                   theme="snow"
