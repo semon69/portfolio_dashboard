@@ -44,6 +44,8 @@ const ExperienceForm = ({ mode, value, onChange, onSubmit, saving }: Props) => {
     <form onSubmit={handleSubmit}>
       <PageHeader
         title={mode === "create" ? "Add experience" : "Edit experience"}
+        backTo="/manage-experience"
+        backLabel="All experience"
         description="Roles are ordered automatically, with your current one first."
         actions={
           <Button type="submit" loading={saving}>

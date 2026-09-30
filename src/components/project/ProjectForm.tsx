@@ -5,6 +5,7 @@ import Field, { inputClass } from "../ui/Field";
 import { Card, PageHeader } from "../ui/Card";
 import type { ProjectValues } from "./projectFormValues";
 import { resolveAssetUrl } from "../../config/site";
+import ImageUploader from "../ui/ImageUploader";
 
 
 type Props = {
@@ -43,6 +44,8 @@ const ProjectForm = ({ mode, value, onChange, onSubmit, saving }: Props) => {
     <form onSubmit={handleSubmit}>
       <PageHeader
         title={mode === "create" ? "Add a project" : "Edit project"}
+        backTo="/manage-projects"
+        backLabel="All projects"
         description="Links are optional — leave them empty for closed-source or internal work."
         actions={
           <Button type="submit" loading={saving}>
@@ -115,7 +118,14 @@ const ProjectForm = ({ mode, value, onChange, onSubmit, saving }: Props) => {
         <div className="space-y-5">
           <Card className="p-5">
             <h2 className="mb-4 text-sm font-semibold text-ink">Cover image</h2>
-            <Field label="Image URL" htmlFor="image" required error={errors.image}>
+            <ImageUploader
+              folder="projects"
+              onUploaded={(url) => set("image", url)}
+            />
+
+            <p className="my-3 text-center text-xs text-faint">or paste a link</p>
+
+            <Field label="Image" htmlFor="image" required error={errors.image}>
               <input
                 id="image"
                 type="text"

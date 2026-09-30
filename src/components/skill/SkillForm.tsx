@@ -32,6 +32,8 @@ const SkillForm = ({ mode, value, onChange, onSubmit, saving }: Props) => {
     <form onSubmit={handleSubmit}>
       <PageHeader
         title={mode === "create" ? "Add a skill" : "Edit skill"}
+        backTo="/manage-skills"
+        backLabel="All skills"
         description="Skills show as text chips, grouped by category, on your public site."
         actions={
           <Button type="submit" loading={saving}>

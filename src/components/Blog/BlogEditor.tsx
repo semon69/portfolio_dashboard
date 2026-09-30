@@ -17,6 +17,7 @@ import Field, { inputClass } from "../ui/Field";
 import { Card, PageHeader } from "../ui/Card";
 import type { BlogFormValues } from "./blogFormValues";
 import { isRelativeAsset, resolveAssetUrl } from "../../config/site";
+import ImageUploader from "../ui/ImageUploader";
 
 
 // Only the formats the public site's .rich-text styles actually render.
@@ -109,6 +110,8 @@ const BlogEditor = ({ mode, value, onChange, onSubmit, saving }: Props) => {
     <div>
       <PageHeader
         title={mode === "create" ? "Write a post" : "Edit post"}
+        backTo="/manage-blogs"
+        backLabel="All posts"
         description={
           mode === "create"
             ? "Drafts stay hidden on the public site until you publish them."
@@ -281,11 +284,20 @@ const BlogEditor = ({ mode, value, onChange, onSubmit, saving }: Props) => {
               <FiImage aria-hidden="true" />
               Cover image
             </h2>
+            <ImageUploader
+              folder="blog"
+              onUploaded={(url) => set("image", url)}
+            />
+
+            <p className="my-3 text-center text-xs text-faint">
+              or paste a link
+            </p>
+
             <Field
               label="Image"
               htmlFor="image"
               required
-              hint="A path like /images/blog/cover.png, or a full URL for an image hosted elsewhere."
+              hint="A path like /images/blog/cover.png, or a full URL."
               error={errors.image}
             >
               {/* Deliberately type="text": type="url" rejects the
