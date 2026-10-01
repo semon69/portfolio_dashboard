@@ -11,7 +11,7 @@
  * Override per environment with VITE_SITE_URL in `.env.local`.
  */
 export const SITE_URL = (
-  import.meta.env.VITE_SITE_URL ?? "https://emon69.netlify.app"
+  import.meta.env.VITE_SITE_URL ?? "https://mdemonsheikh.vercel.app"
 ).replace(/\/+$/, "");
 
 /**
